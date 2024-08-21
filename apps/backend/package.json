@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "module": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run --hot ./src/index.ts"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@hono/zod-openapi": "^0.15.3",
+    "@scalar/hono-api-reference": "^0.5.141",
+    "zod": "^3.23.8"
+  }
+}
