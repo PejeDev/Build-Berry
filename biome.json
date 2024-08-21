@@ -62,6 +62,6 @@
     }
   },
   "files": {
-    "ignore": [".next/**", ".astro/**"]
+    "ignore": ["client/prisma/**/**"]
   }
 }

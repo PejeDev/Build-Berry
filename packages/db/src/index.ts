@@ -1,1 +1,3 @@
-console.log('Hello via Bun!')
+import { PrismaClient } from '@/client/prisma'
+
+exports.PrismaClient = PrismaClient

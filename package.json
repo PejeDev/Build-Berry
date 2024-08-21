@@ -1,18 +1,5 @@
 {
   "name": "labs-deploy-bot",
-  "scripts": {
-    "dev": "bun --filter '*' dev",
-    "front:dev": "bun run --filter apps/frontend dev",
-    "back:dev": "bun run --filter apps/backend dev",
-    "lint": "bun run lint:packages && bun run lint:apps",
-    "lint:packages": "bun run biome ci ./packages ",
-    "lint:apps": "bun run biome ci ./apps ",
-    "prepare": "husky || true"
-  },
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
     "@types/bun": "latest",
@@ -20,5 +7,16 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "private": true,
+  "scripts": {
+    "dev": "bun run --filter '*' dev",
+    "front:dev": "bun run --filter frontend dev",
+    "back:dev": "bun run --filter backend dev",
+    "lint": "bun run lint:packages && bun run lint:apps",
+    "lint:packages": "bun run biome ci ./packages/ ",
+    "lint:apps": "bun run biome ci ./apps/ ",
+    "prepare": "husky || true"
+  },
+  "workspaces": ["apps/*", "packages/*"]
 }

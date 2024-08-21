@@ -1,86 +1,63 @@
-import { z } from '@hono/zod-openapi'
-
-const ParamsSchema = z.object({
-  id: z
-    .string()
-    .min(3)
-    .openapi({
-      param: {
-        name: 'id',
-        in: 'path',
-      },
-      example: '1212121',
-    }),
-})
-
-const UserSchema = z
-  .object({
-    id: z.string().openapi({
-      example: '123',
-    }),
-    name: z.string().openapi({
-      example: 'John Doe',
-    }),
-    age: z.number().openapi({
-      example: 42,
-    }),
-  })
-  .openapi('User')
-
-import { createRoute } from '@hono/zod-openapi'
-
-const route = createRoute({
-  method: 'get',
-  path: '/users/{id}',
-  request: {
-    params: ParamsSchema,
-  },
-  responses: {
-    200: {
-      content: {
-        'application/json': {
-          schema: UserSchema,
-        },
-      },
-      description: 'Retrieve the user',
-    },
-  },
-})
-
 import { OpenAPIHono } from '@hono/zod-openapi'
+import { apiReference } from '@scalar/hono-api-reference'
+import type { Context } from 'hono'
+
+import {
+  type AuthConfig,
+  authHandler,
+  initAuthConfig,
+  verifyAuth,
+} from '@hono/auth-js'
+
+import GitHub from '@auth/core/providers/github'
+import Nodemailer from '@auth/core/providers/nodemailer'
 
 const app = new OpenAPIHono()
 
-app.openapi(route, (c) => {
-  const { id } = c.req.valid('param')
-  return c.json(
-    {
-      id,
-      age: 20,
-      name: 'Ultra-man',
-    },
-    200, // You should specify the status code even if it is 200.
-  )
+app.use('*', initAuthConfig(getAuthConfig))
+
+app.use('/api/auth/*', authHandler())
+
+app.use('/api/*', verifyAuth())
+
+app.get('/api/protected', (c) => {
+  const auth = c.get('authUser')
+  return c.json(auth)
 })
 
+function getAuthConfig(c: Context): AuthConfig {
+  return {
+    secret: c.env.AUTH_SECRET,
+    providers: [
+      GitHub({
+        clientId: c.env.GITHUB_ID,
+        clientSecret: c.env.GITHUB_SECRET,
+      }),
+      Nodemailer({
+        server: process.env.EMAIL_SERVER,
+        from: process.env.EMAIL_FROM,
+      }),
+    ],
+  }
+}
+
 // The OpenAPI documentation will be available at /doc
-app.doc('/doc', {
+app.doc('/openapi.json', {
   openapi: '3.0.0',
   info: {
-    version: '1.0.0',
-    title: 'My API',
+    version: '0.1.0',
+    title: 'labs deploy bot',
   },
 })
 
-import { apiReference } from '@scalar/hono-api-reference'
-
 app.get(
-  '/reference',
+  '/docs',
   apiReference({
-    theme: 'purple',
+    theme: 'deepSpace',
     spec: {
-      url: '/doc',
+      url: '/openapi.json',
     },
   }),
 )
+
 export default app
