@@ -1,5 +1,6 @@
 {
   "name": "labs-deploy-bot",
+  "workspaces": ["apps/*", "packages/*"],
   "devDependencies": {
     "@biomejs/biome": "1.8.3",
     "@types/bun": "latest",
@@ -16,7 +17,8 @@
     "lint": "bun run lint:packages && bun run lint:apps",
     "lint:packages": "bun run biome ci ./packages/ ",
     "lint:apps": "bun run biome ci ./apps/ ",
-    "prepare": "husky || true"
-  },
-  "workspaces": ["apps/*", "packages/*"]
+    "prepare": "husky || true",
+    "add:front": "bun add --cwd apps/frontend",
+    "add:back": "bun add --cwd apps/backend"
+  }
 }

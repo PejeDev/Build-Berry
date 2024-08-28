@@ -1,3 +1,3 @@
-import { PrismaClient } from '@/client/prisma'
+import { PrismaClient as client } from '@/client/prisma'
 
-exports.PrismaClient = PrismaClient
+export default client

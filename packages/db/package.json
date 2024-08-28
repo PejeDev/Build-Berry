@@ -2,6 +2,7 @@
   "name": "db",
   "module": "src/index.ts",
   "type": "module",
+  "exports": "./src/index.ts",
   "devDependencies": {
     "@types/bun": "latest",
     "prisma": "^5.18.0"

@@ -9,8 +9,9 @@ import {
   verifyAuth,
 } from '@hono/auth-js'
 
-import GitHub from '@auth/core/providers/github'
+import { prisma } from '@/services/db/prisma'
 import Nodemailer from '@auth/core/providers/nodemailer'
+import { PrismaAdapter } from '@auth/prisma-adapter'
 
 const app = new OpenAPIHono()
 
@@ -27,17 +28,20 @@ app.get('/api/protected', (c) => {
 
 function getAuthConfig(c: Context): AuthConfig {
   return {
-    secret: c.env.AUTH_SECRET,
+    adapter: PrismaAdapter(prisma),
+    secret: process.env.AUTH_SECRET,
     providers: [
-      GitHub({
-        clientId: c.env.GITHUB_ID,
-        clientSecret: c.env.GITHUB_SECRET,
-      }),
       Nodemailer({
         server: process.env.EMAIL_SERVER,
         from: process.env.EMAIL_FROM,
       }),
     ],
+    callbacks: {
+      signIn: async ({ profile }) => {
+        const whitelist = process.env.AUTH_WHITELIST?.split(',')
+        return whitelist?.includes(profile?.email ?? '') ?? false
+      },
+    },
   }
 }
 
