@@ -1,6 +1,7 @@
 import { OpenAPIHono } from '@hono/zod-openapi'
 import { apiReference } from '@scalar/hono-api-reference'
 import type { Context } from 'hono'
+import { cors } from 'hono/cors'
 
 import {
   type AuthConfig,
@@ -14,6 +15,15 @@ import Nodemailer from '@auth/core/providers/nodemailer'
 import { PrismaAdapter } from '@auth/prisma-adapter'
 
 const app = new OpenAPIHono()
+
+app.use(
+  '*',
+  cors({
+    origin: (origin) => origin,
+    allowHeaders: ['Content-Type'],
+    credentials: true,
+  }),
+)
 
 app.use('*', initAuthConfig(getAuthConfig))
 
@@ -29,19 +39,29 @@ app.get('/api/protected', (c) => {
 function getAuthConfig(c: Context): AuthConfig {
   return {
     adapter: PrismaAdapter(prisma),
-    secret: process.env.AUTH_SECRET,
+    secret: Bun.env.AUTH_SECRET,
     providers: [
       Nodemailer({
-        server: process.env.EMAIL_SERVER,
-        from: process.env.EMAIL_FROM,
+        server: {
+          host: Bun.env.EMAIL_SERVER_HOST,
+          port: Number.parseInt(Bun.env.EMAIL_SERVER_PORT ?? '587'),
+          auth: {
+            user: Bun.env.EMAIL_SERVER_USER,
+            pass: Bun.env.EMAIL_SERVER_PASSWORD,
+          },
+        },
+        from: Bun.env.EMAIL_FROM,
       }),
     ],
     callbacks: {
-      signIn: async ({ profile }) => {
-        const whitelist = process.env.AUTH_WHITELIST?.split(',')
-        return whitelist?.includes(profile?.email ?? '') ?? false
+      signIn: async ({ profile, user }) => {
+        const whitelist = Bun.env.AUTH_WHITELIST?.split(',') ?? []
+        const email = profile?.email ?? user?.email ?? ''
+
+        return whitelist.includes(email) ?? false
       },
     },
+    trustHost: true,
   }
 }
 
@@ -63,5 +83,13 @@ app.get(
     },
   }),
 )
+
+if (Bun.env.NODE_ENV !== 'production') {
+  app.all('*', async (c) => {
+    const res = await fetch(`http://localhost:5173${c.req.path}`)
+    const newResponse = new Response(res.body, res)
+    return newResponse
+  })
+}
 
 export default app

@@ -130,3 +130,5 @@ dist
 .pnp.*
 
 .envrc
+
+.DS_store

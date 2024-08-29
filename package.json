@@ -18,7 +18,10 @@
     "lint:packages": "bun run biome ci ./packages/ ",
     "lint:apps": "bun run biome ci ./apps/ ",
     "prepare": "husky || true",
-    "add:front": "bun add --cwd apps/frontend",
-    "add:back": "bun add --cwd apps/backend"
+    "front:add": "bun add --cwd apps/frontend",
+    "front:rm": "bun remove --cwd apps/frontend",
+    "back:add": "bun add --cwd apps/backend",
+    "back:rm": "bun remove --cwd apps/backend",
+    "front:shad-add": "bunx --bun shadcn-ui@latest add --cwd apps/frontend "
   }
 }

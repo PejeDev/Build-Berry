@@ -20,7 +20,12 @@
                   "kind": "objectLiteralProperty",
                   "scope": "any"
                 },
-                "formats": ["camelCase", "CONSTANT_CASE", "PascalCase"]
+                "formats": [
+                  "camelCase",
+                  "CONSTANT_CASE",
+                  "PascalCase",
+                  "snake_case"
+                ]
               },
               {
                 "selector": {
@@ -62,6 +67,6 @@
     }
   },
   "files": {
-    "ignore": ["client/prisma/**/**", "routeTree.gen.ts"]
+    "ignore": ["client/prisma/**/**"]
   }
 }
