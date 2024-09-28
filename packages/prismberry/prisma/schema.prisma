@@ -13,7 +13,7 @@ model User {
     name          String?
     email         String          @unique
     emailVerified DateTime?
-    image         String?
+    image         String          @default("https://gravatar.com/avatar/?d=robohash")
     accounts      Account[]
     sessions      Session[]
     // Optional for WebAuthn support

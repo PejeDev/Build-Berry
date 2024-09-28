@@ -1,7 +1,7 @@
 import { MainNav } from '@/components/core/main-nav'
+import { ModeToggle } from '@/components/core/mode-toggle'
 import { Overview } from '@/components/core/overview'
 import { RecentSales } from '@/components/core/recent-sales'
-import { Search } from '@/components/core/search'
 import TeamSwitcher from '@/components/core/team-switcher'
 import { UserNav } from '@/components/core/user-nav'
 import { Button } from '@/components/ui/button'
@@ -22,10 +22,11 @@ export function DashboardPage(): React.ReactElement {
       <div className="hidden flex-col md:flex">
         <div className="border-b">
           <div className="flex h-16 items-center px-4">
+            <h1 className="text-2xl font-bold pr-4">🍓BuildBerry</h1>
             <TeamSwitcher />
             <MainNav className="mx-6" />
             <div className="ml-auto flex items-center space-x-4">
-              <Search />
+              <ModeToggle />
               {status === 'authenticated' ? (
                 <UserNav user={user} />
               ) : (

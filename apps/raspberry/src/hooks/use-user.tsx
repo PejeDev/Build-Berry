@@ -11,6 +11,15 @@ export type AuthContextType = {
   status: 'loading' | 'authenticated' | 'unauthenticated'
 }
 
+export const AuthStatusEnum = {
+  Loading: 'loading',
+  Authenticated: 'authenticated',
+  Unauthenticated: 'unauthenticated',
+} as const
+
+export type AuthStatusEnumType =
+  (typeof AuthStatusEnum)[keyof typeof AuthStatusEnum]
+
 export function useUser() {
   return useOutletContext<AuthContextType>()
 }

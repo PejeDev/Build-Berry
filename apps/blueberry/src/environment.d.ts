@@ -1,5 +1,5 @@
 declare global {
-  // biome-ignore lint/style/useNamingConvention: <explanation>
+  // biome-ignore lint/style/useNamingConvention: This is a global type
   namespace NodeJS {
     interface ProcessEnv {
       EMAIL_SERVER_HOST: string

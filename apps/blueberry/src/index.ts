@@ -61,6 +61,9 @@ function getAuthConfig(c: Context): AuthConfig {
         return whitelist.includes(email) ?? false
       },
     },
+    pages: {
+      verifyRequest: '/verify-request',
+    },
     trustHost: true,
   }
 }
@@ -83,13 +86,5 @@ app.get(
     },
   }),
 )
-
-if (Bun.env.NODE_ENV !== 'production') {
-  app.all('*', async (c) => {
-    const res = await fetch(`http://localhost:5173${c.req.path}`)
-    const newResponse = new Response(res.body, res)
-    return newResponse
-  })
-}
 
 export default app
