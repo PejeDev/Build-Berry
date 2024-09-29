@@ -15,7 +15,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   async function onSubmit(event: SyntheticEvent) {
     event.preventDefault()
     setIsLoading(true)
-    signIn('email', { email: event.target })
+    signIn('nodemailer', { email })
   }
 
   return (

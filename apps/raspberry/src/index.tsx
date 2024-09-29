@@ -6,9 +6,9 @@ import { App } from './app'
 
 // Setup auth config
 authConfigManager.setConfig({
-  baseUrl: 'http://localhost:3000', //needed  for cross domain setup.
+  baseUrl: 'http://localhost:5173',
   basePath: '/api/auth',
-  credentials: 'same-origin', //needed  for cross domain setup
+  credentials: 'same-origin',
 })
 
 createRoot(document.getElementById('root') as HTMLElement).render(
