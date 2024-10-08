@@ -13,6 +13,7 @@ import {
 import { prisma } from '@/services/db/prisma'
 import Nodemailer from '@auth/core/providers/nodemailer'
 import { PrismaAdapter } from '@auth/prisma-adapter'
+import { sendVerificationRequest } from './services/email/nodemailer'
 
 const app = new OpenAPIHono()
 
@@ -51,6 +52,7 @@ function getAuthConfig(c: Context): AuthConfig {
           },
         },
         from: Bun.env.EMAIL_FROM,
+        sendVerificationRequest
       }),
     ],
     callbacks: {
