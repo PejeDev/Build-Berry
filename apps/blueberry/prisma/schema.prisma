@@ -1,0 +1,73 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id            String    @id @default(cuid())
+    name          String
+    email         String
+    emailVerified Boolean   @default(false)
+    image         String    @default("https://gravatar.com/avatar/?d=robohash")
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    Session       Session[]
+    Account       Account[]
+    Passkey       Passkey[]
+}
+
+model Session {
+    id        String   @id @default(cuid())
+    user      User     @relation(fields: [userId], references: [id])
+    userId    String
+    token     String
+    expiresAt DateTime
+    ipAddress String
+    userAgent String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Account {
+    id                    String    @id @default(cuid())
+    user                  User      @relation(fields: [userId], references: [id])
+    userId                String
+    accountId             String
+    providerId            String
+    accessToken           String?
+    refreshToken          String?
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?
+    password              String?
+    createdAt             DateTime  @default(now())
+    updatedAt             DateTime  @updatedAt
+}
+
+model Verification {
+    id         String   @id @default(cuid())
+    identifier String
+    value      String
+    expiresAt  DateTime
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}
+
+model Passkey {
+    id             String   @id @default(cuid())
+    name           String?
+    publicKey      String
+    user           User     @relation(fields: [userId], references: [id])
+    userId         String
+    WebAuthnUserId String
+    counter        Int
+    deviceType     String
+    backedUp       Boolean
+    transports     String
+    createdAt      DateTime @default(now())
+}

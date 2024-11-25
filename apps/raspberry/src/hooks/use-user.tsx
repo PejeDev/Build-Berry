@@ -4,21 +4,18 @@ export type User = {
   id?: string | null
   email?: string | null
   name?: string | null
+  image?: string | null
+}
+
+export type AuthError = {
+  status: number
+  statusText: string
 }
 
 export type AuthContextType = {
   user?: User
-  status: 'loading' | 'authenticated' | 'unauthenticated'
+  error: AuthError | null
 }
-
-export const AuthStatusEnum = {
-  Loading: 'loading',
-  Authenticated: 'authenticated',
-  Unauthenticated: 'unauthenticated',
-} as const
-
-export type AuthStatusEnumType =
-  (typeof AuthStatusEnum)[keyof typeof AuthStatusEnum]
 
 export function useUser() {
   return useOutletContext<AuthContextType>()

@@ -1,12 +1,8 @@
 import { AuthPage } from '@/pages/auth'
 import { DashboardPage } from '@/pages/dashboard'
 import { Protected } from '@/pages/layout/protected'
-import {
-  Navigate,
-  Route,
-  createBrowserRouter,
-  createRoutesFromElements,
-} from 'react-router-dom'
+import { Navigate, Route, createBrowserRouter, createRoutesFromElements } from 'react-router-dom'
+import DashboardLayout from './pages/layout/dashboard'
 import { RootLayout } from './pages/layout/root'
 
 export const router = createBrowserRouter(
@@ -16,7 +12,14 @@ export const router = createBrowserRouter(
       <Route path="auth" element={<AuthPage />} />
       <Route path="*" element={<h1>Page not found</h1>} />
       <Route element={<Protected />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route
+          path="/dashboard"
+          element={
+            <DashboardLayout>
+              <DashboardPage />
+            </DashboardLayout>
+          }
+        />
       </Route>
     </Route>,
   ),

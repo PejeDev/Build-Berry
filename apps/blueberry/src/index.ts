@@ -1,92 +1,27 @@
-import { OpenAPIHono } from '@hono/zod-openapi'
-import { apiReference } from '@scalar/hono-api-reference'
-import type { Context } from 'hono'
-import { cors } from 'hono/cors'
+import { apiV1Routes } from '@/routes/api'
+import { apiV1Docs } from '@/routes/api/v1/docs'
+import { logger } from '@bogeychan/elysia-logger'
+import cors from '@elysiajs/cors'
+import { Elysia } from 'elysia'
 
-import {
-  type AuthConfig,
-  authHandler,
-  initAuthConfig,
-  verifyAuth,
-} from '@hono/auth-js'
+const app = new Elysia()
 
-import { prisma } from '@/services/db/prisma'
-import Nodemailer from '@auth/core/providers/nodemailer'
-import { PrismaAdapter } from '@auth/prisma-adapter'
-import { sendVerificationRequest } from './services/email/nodemailer'
-
-const app = new OpenAPIHono()
-
+app.use(cors())
 app.use(
-  '*',
-  cors({
-    origin: (origin) => origin,
-    allowHeaders: ['Content-Type'],
-    credentials: true,
-  }),
-)
-
-app.use('*', initAuthConfig(getAuthConfig))
-
-app.use('/api/auth/*', authHandler())
-
-app.use('/api/*', verifyAuth())
-
-app.get('/api/protected', (c) => {
-  const auth = c.get('authUser')
-  return c.json(auth)
-})
-
-function getAuthConfig(c: Context): AuthConfig {
-  return {
-    adapter: PrismaAdapter(prisma),
-    secret: Bun.env.AUTH_SECRET,
-    providers: [
-      Nodemailer({
-        server: {
-          host: Bun.env.EMAIL_SERVER_HOST,
-          port: Number.parseInt(Bun.env.EMAIL_SERVER_PORT ?? '587'),
-          auth: {
-            user: Bun.env.EMAIL_SERVER_USER,
-            pass: Bun.env.EMAIL_SERVER_PASSWORD,
-          },
-        },
-        from: Bun.env.EMAIL_FROM,
-        sendVerificationRequest
-      }),
-    ],
-    callbacks: {
-      signIn: async ({ profile, user }) => {
-        const whitelist = Bun.env.AUTH_WHITELIST?.split(',') ?? []
-        const email = profile?.email ?? user?.email ?? ''
-
-        return whitelist.includes(email) ?? false
+  logger({
+    transport: {
+      target: 'pino-pretty',
+      options: {
+        colorize: true,
       },
     },
-    pages: {
-      verifyRequest: '/verify-request',
-    },
-    trustHost: true,
-  }
-}
-
-// The OpenAPI documentation will be available at /doc
-app.doc('/openapi.json', {
-  openapi: '3.0.0',
-  info: {
-    version: '0.1.0',
-    title: 'labs deploy bot',
-  },
-})
-
-app.get(
-  '/docs',
-  apiReference({
-    theme: 'deepSpace',
-    spec: {
-      url: '/openapi.json',
-    },
   }),
 )
 
-export default app
+app.use(apiV1Docs)
+
+app.use(apiV1Routes)
+
+app.listen(3000)
+
+console.log(`🦊 Elysia is running at http://${app.server?.hostname}:${app.server?.port}`)

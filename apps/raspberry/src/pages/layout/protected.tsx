@@ -2,15 +2,10 @@ import { type AuthContextType, useUser } from '@/hooks/use-user'
 import { Navigate, Outlet } from 'react-router-dom'
 
 export function Protected(): React.ReactElement {
-  const { user, status } = useUser()
+  const { user, error } = useUser()
 
-  return (
-    <>
-      {status === 'authenticated' ? (
-        <Outlet context={{ user, status } satisfies AuthContextType} />
-      ) : (
-        <Navigate to="/auth" />
-      )}
-    </>
-  )
+  console.log('user', user)
+  console.log('error', error)
+
+  return <>{user ? <Outlet context={{ user, error } satisfies AuthContextType} /> : <Navigate to="/auth" />}</>
 }

@@ -8,9 +8,9 @@
   },
   "private": true,
   "scripts": {
-    "dev": "bun run --filter './apps/**' dev",
-    "front:dev": "bun run --cwd apps/raspberry dev",
-    "back:dev": "bun run --cwd apps/blueberry dev",
+    "dev": "bun run --env-file=../../.env --filter './apps/**' dev",
+    "front:dev": "bun run --env-file=../../.env --cwd apps/raspberry dev",
+    "back:dev": "bun run --env-file=../../.env --cwd apps/blueberry dev",
     "lint": "bun run lint:packages && bun run lint:apps",
     "lint:packages": "bun run biome ci ./packages/ ",
     "lint:apps": "bun run biome ci ./apps/ ",
@@ -19,6 +19,6 @@
     "front:rm": "bun remove --cwd apps/raspberry",
     "back:add": "bun add --cwd apps/blueberry",
     "back:rm": "bun remove --cwd apps/blueberry",
-    "front:shad-add": "bunx --bun shadcn-ui@latest add --cwd apps/raspberry "
+    "front:shad-add": "bunx --bun shadcn-ui@latest add --cwd apps/raspberry"
   }
 }

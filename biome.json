@@ -20,12 +20,7 @@
                   "kind": "objectLiteralProperty",
                   "scope": "any"
                 },
-                "formats": [
-                  "camelCase",
-                  "CONSTANT_CASE",
-                  "PascalCase",
-                  "snake_case"
-                ]
+                "formats": ["camelCase", "CONSTANT_CASE", "PascalCase", "snake_case"]
               },
               {
                 "selector": {
