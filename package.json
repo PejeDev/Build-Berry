@@ -1,0 +1,24 @@
+{
+  "name": "build-berry",
+  "workspaces": ["apps/*", "packages/*"],
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@types/bun": "latest",
+    "husky": "^9.1.5"
+  },
+  "private": true,
+  "scripts": {
+    "dev": "bun run --env-file=../../.env --filter './apps/**' dev",
+    "front:dev": "bun run --env-file=../../.env --cwd apps/raspberry dev",
+    "back:dev": "bun run --env-file=../../.env --cwd apps/blueberry dev",
+    "lint": "bun run lint:packages && bun run lint:apps",
+    "lint:packages": "bun run biome ci ./packages/ ",
+    "lint:apps": "bun run biome ci ./apps/ ",
+    "prepare": "husky || true",
+    "front:add": "bun add --cwd apps/raspberry",
+    "front:rm": "bun remove --cwd apps/raspberry",
+    "back:add": "bun add --cwd apps/blueberry",
+    "back:rm": "bun remove --cwd apps/blueberry",
+    "front:shad-add": "bunx --bun shadcn-ui@latest add --cwd apps/raspberry"
+  }
+}
